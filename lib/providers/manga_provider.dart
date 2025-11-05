@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../models/manga.dart';
 import '../models/chapter.dart';
-import '../services/mangadex_service.dart';
+import '../services/manga_dex_service.dart';
 
 class MangaProvider extends ChangeNotifier {
   final MangaDexService _service = MangaDexService();
