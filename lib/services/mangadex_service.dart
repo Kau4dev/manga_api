@@ -54,7 +54,6 @@ class MangaDexService {
     }
   }
 
-  // Obtém detalhes de um mangá
   Future<Manga?> getMangaDetails(String mangaId) async {
     try {
       final response = await http.get(
