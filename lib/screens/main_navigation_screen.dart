@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-//import 'home_screen.dart';
-//import 'search_screen.dart';
-//import 'favorites_screen.dart';
+import 'home_screen.dart';
+import 'search_screen.dart';
+import 'favorites_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -14,9 +14,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = const [
-    // HomeScreen(),
-    //SearchScreen(),
-    //FavoritesScreen(),
+    HomeScreen(),
+    SearchScreen(),
+    FavoritesScreen(),
   ];
 
   @override
