@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import '../models/chapter_pages.dart';
-import '../services/mangadex_service.dart';
+import '../services/manga_dex_service.dart';
 
 enum ReadingMode { singlePage, continuousScroll, doublePageSpread }
 
@@ -335,7 +335,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
               const Expanded(child: SizedBox()),
           ],
         );
-      },
-    );
-  }
+      },
+    );
+  }
 }
