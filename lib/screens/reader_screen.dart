@@ -61,35 +61,46 @@ class _ReaderScreenState extends State<ReaderScreen> {
   void _showReadingModeMenu() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Modo de Leitura',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      isScrollControlled: true,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.4,
+        minChildSize: 0.2,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Modo de Leitura',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                _buildModeOption(
+                  ReadingMode.singlePage,
+                  'Página Única',
+                  'Arraste para os lados + zoom',
+                  Icons.image,
+                ),
+                _buildModeOption(
+                  ReadingMode.continuousScroll,
+                  'Rolagem Contínua',
+                  'Role para baixo + toque para zoom',
+                  Icons.view_stream,
+                ),
+                _buildModeOption(
+                  ReadingMode.doublePageSpread,
+                  'Página Dupla',
+                  'Duas páginas + toque para zoom',
+                  Icons.book,
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
-            const SizedBox(height: 16),
-            _buildModeOption(
-              ReadingMode.singlePage,
-              'Página Única',
-              'Arraste para os lados + zoom',
-              Icons.image,
-            ),
-            _buildModeOption(
-              ReadingMode.continuousScroll,
-              'Rolagem Contínua',
-              'Role para baixo + toque para zoom',
-              Icons.view_stream,
-            ),
-            _buildModeOption(
-              ReadingMode.doublePageSpread,
-              'Página Dupla',
-              'Duas páginas + toque para zoom',
-              Icons.book,
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -202,7 +213,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                // Abre a imagem em tela cheia com zoom
+                // Abre em tela cheia com zoom
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -226,29 +237,33 @@ class _ReaderScreenState extends State<ReaderScreen> {
                   ),
                 );
               },
-              child: Image.network(
-                _chapterPages!.getPageUrls()[index],
-                fit: BoxFit.contain,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    height: 300,
-                    alignment: Alignment.center,
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                          : null,
-                    ),
-                  );
-                },
+              child: InteractiveViewer(
+                minScale: 0.5,
+                maxScale: 4.0,
+                child: Image.network(
+                  _chapterPages!.getPageUrls()[index],
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return Container(
+                      height: 300,
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             Container(
               padding: const EdgeInsets.all(8),
               color: Colors.black54,
               child: Text(
-                'Página ${index + 1} - Toque para zoom',
+                'Página ${index + 1} - Pinça para zoom ou toque para tela cheia',
                 style: const TextStyle(color: Colors.white),
               ),
             ),
@@ -275,60 +290,26 @@ class _ReaderScreenState extends State<ReaderScreen> {
         return Row(
           children: [
             Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  // Abre a imagem esquerda em tela cheia com zoom
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => Scaffold(
-                        backgroundColor: Colors.black,
-                        appBar: AppBar(
-                          backgroundColor: Colors.transparent,
-                          title: Text('Página ${leftIndex + 1}'),
-                        ),
-                        body: PhotoView(
-                          imageProvider: NetworkImage(pages[leftIndex]),
-                          minScale: PhotoViewComputedScale.contained,
-                          maxScale: PhotoViewComputedScale.covered * 3,
-                          backgroundDecoration: const BoxDecoration(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                child: Image.network(pages[leftIndex], fit: BoxFit.contain),
+              child: PhotoView(
+                imageProvider: NetworkImage(pages[leftIndex]),
+                minScale: PhotoViewComputedScale.contained,
+                maxScale: PhotoViewComputedScale.covered * 3,
+                initialScale: PhotoViewComputedScale.contained,
+                backgroundDecoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                ),
               ),
             ),
             if (rightIndex < pages.length)
               Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    // Abre a imagem direita em tela cheia com zoom
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => Scaffold(
-                          backgroundColor: Colors.black,
-                          appBar: AppBar(
-                            backgroundColor: Colors.transparent,
-                            title: Text('Página ${rightIndex + 1}'),
-                          ),
-                          body: PhotoView(
-                            imageProvider: NetworkImage(pages[rightIndex]),
-                            minScale: PhotoViewComputedScale.contained,
-                            maxScale: PhotoViewComputedScale.covered * 3,
-                            backgroundDecoration: const BoxDecoration(
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                  child: Image.network(pages[rightIndex], fit: BoxFit.contain),
+                child: PhotoView(
+                  imageProvider: NetworkImage(pages[rightIndex]),
+                  minScale: PhotoViewComputedScale.contained,
+                  maxScale: PhotoViewComputedScale.covered * 3,
+                  initialScale: PhotoViewComputedScale.contained,
+                  backgroundDecoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                  ),
                 ),
               )
             else
