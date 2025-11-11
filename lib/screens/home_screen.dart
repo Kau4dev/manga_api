@@ -29,12 +29,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('MangaDex'),
+        title: const Text('Manga Api'),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              // Abre a tela de busca como tela completa
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const SearchScreen()),
@@ -58,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Seção de Mangás Populares
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
@@ -85,7 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Seção de Capítulos Recentes
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
