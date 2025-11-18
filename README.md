@@ -1,4 +1,4 @@
-# MangaDex Reader App
+# Manga api App
 
 Um aplicativo Flutter completo para ler mangás usando a API do MangaDex.
 
